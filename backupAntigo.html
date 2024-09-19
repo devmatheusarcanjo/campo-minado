@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Título da página</title>
+  <style>
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0; 
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(10, auto);      
+      
+      padding: 10px;
+      gap: 1px;
+      background-color: #222;
+      color: white;     
+    }
+    
+    
+    
+    div {
+      height: calc(100vw / 10);
+      background-color: #888;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: solid 1px black;
+      font-size: 1.1rem;
+      color: blue;
+      border-radius: 2px;
+            
+      animation-name: tran;
+      animation-iteration-count: 1;
+      animation-duration: 2s;
+      animation-timing-function: ease;                 
+    }
+    
+    span {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .active {
+      background-color: #aaa;
+    }
+    
+    .mostrar-bomba {
+      background-color: black
+    }
+    
+ 
+    
+    
+    @keyframes tran {
+      0% {opacity: 0; transform: translateY(600px)}
+      50% {opacity: 1;}
+      100% {
+      transform: translateY(0px)}
+    }
+    
+    
+  
+    
+    
+  </style>
+</head>
+<body>
+    
+            
+<script>
+   
+try {
+  
+  
+  const dados = {
+    positions: [],
+    positionsBombas: [],
+    quantidadeBombas: 70,
+    maxOpcoes: 170,
+    quantColumns: 10
+  }
+  
+  bombasPosition(dados)        
+  console.log(dados.positionsBombas)
+  
+  
+  // Loop para criar os quadrados
+  let index = 1;
+  const loop = setInterval(e => {
+    
+    const { positionsBombas } = dados
+    
+    let div = document.createElement("div");   
+    div.addEventListener("click", clique)
+    div.id = index;
+    div.classList.add("animacao")
+         
+    const numeroBombasAoRedor = quantidadeBombasAoRedor(index);
+    
+    // Se o index não conter uma bomba, então criar span com a quantidade de bombas e adicionar na div        
+   
+   div = criarSpan(div, index, numeroBombasAoRedor);
+
+//
+                     
+    document.body.appendChild(div)            
+    
+    if (index >= dados.maxOpcoes) clearInterval(loop);
+    
+    index++  
+  }, 50)
+  
+////////// INICIO DA FUNÇÃO CLIQUE
+ 
+  function clique(event) {
+     const {positions, positionsBombas} = dados;
+     const div = event.currentTarget;
+     const span = event.target;
+     
+     const id = Number(div.id)
+          
+     console.log(div)
+     // Verificar se o local clicado tem uma bomba
+     if (positionsBombas.includes(id)) {
+         div.classList.add("mostrar-bomba"); 
+         console.log("foi") 
+     } else {       
+         div.firstChild.style.opacity = 1;
+         div.classList.add("active");
+     }
+     
+     
+     
+     console.log(positions)          
+  }
+  
+  
+////////// INICIO FUNÇÃO Função para definir a posição das bombas
+
+  function bombasPosition() {
+      const {positionsBombas, quantidadeBombas, maxOpcoes} = dados;
+    
+    while (positionsBombas.length < quantidadeBombas) {
+      
+      const numeroGerado = gAleatorio(1, maxOpcoes);
+      if (!positionsBombas.includes(
+      numeroGerado)) positionsBombas.push(numeroGerado);
+                   
+    }
+  }
+
+////////// FIM FUNÇÃO Função para definir a posição das bombas
+ 
+  
+  function gAleatorio(min, max) {
+    max++
+    return Math.floor(Math.random() * (min - max) + max)
+    
+  }
+  
+  
+  
+///////// INICIO DA FUNÇÃO  quantidadeBombasAoRedor 
+
+  function quantidadeBombasAoRedor(index) {
+    const {positionsBombas} = dados;       
+                
+    // Index de posições em volta do elemento clicado.
+    
+    const emVolta = indexEmVolta(index);
+        
+    
+    // Obter a quantidade de bombas em volta do elemento
+    let bombas = positionsBombas.reduce((acu, ele) => {
+      if (emVolta.includes(ele)) 
+        return acu + 1;
+      else 
+        return acu
+    }, 0);
+    
+    
+    return bombas;    
+ 
+ }
+ 
+////////// FIM DA FUNÇÃO  quantidadeBombasAoRedor 
+
+  
+  
+///////// INICIO DA FUNÇÃO indexEmVolta / Função para definir corretamente o numeros de bombas ao redor dos elementos e evitar bombas de coluna anterior 
+
+function indexEmVolta(index) {
+     const {quantColumns: colunas, maxOpcoes: max} = dados;
+          
+   
+    // Criar array com os index das ultimas coluna, apenas para verificação nas condições if abaixo
+    const ultimaColuna = [];
+    let indexLoop = 0;
+    
+    while (indexLoop < max + 20) {
+      indexLoop += colunas;
+      ultimaColuna.push(indexLoop)
+    }
+     
+    // Array com index da primeira coluna       
+    const primeiraColuna = ultimaColuna.map(item => item + 1);
+            
+    
+    // Se o item estiver na primeira, então ignorar os elementos atras dele, e se for a última, ignorsr os itens ao lado dele 
+    if (primeiraColuna.includes(index)) {
+      return [        
+        index + 1,         
+        index + 10,
+        index + 11,        
+        index - 10,
+        index - 9,                
+      ]
+    } else if (ultimaColuna.includes(index)) {
+      return [
+        index - 1,        
+        index + 10,        
+        index + 9,
+        index - 10,        
+        index - 11
+      ]
+    } else {
+      return [
+        index - 1,
+        index + 1, 
+        index + 10,
+        index + 11,
+        index + 9,
+        index - 10,
+        index - 9,
+        index - 11
+      ]
+    }
+                
+    // essa função retorna os locais que são válidos para a contagem de bombas ao redor do elemendo  
+ }
+ 
+//////////// FIM FUNÇÃO indexEmVolta  
+  
+  
+  
+function criarSpan(div, index, numeroBombasAoRedor) {
+  const { positionsBombas } = dados;
+  
+  if (!positionsBombas.includes(index) && !numeroBombasAoRedor == 0) {
+    const span = document.createElement("span");    
+    span.innerHTML = numeroBombasAoRedor;        
+    div.appendChild(span)     
+   }      
+   
+   if (!positionsBombas.includes(index) && numeroBombasAoRedor == 0) {
+     div.setAttribute("vazio", "true")
+   }
+   
+   
+   return div;
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+  
+  } catch (erro) {
+    console.error(erro)
+  }
+  
+</script>
+</body>
+</html>
