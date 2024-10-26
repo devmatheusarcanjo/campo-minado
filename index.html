@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Título da página</title>
-  <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-    
-            
-<script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Título da página</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="centralizar">
+      <header class="maxwidth">
+        <h1>Inicie o jogo com um toque em algum bloco</h1>
+
+        <ul>
+          <li>
+            <b class="mark">Para adicionar uma bandeira:</b>
+            <ul>
+              <li>Primeiro inicie o jogo com um toque na tela.</li>
+              <li>Pelo celular clique e segure no bloco.</li>
+              <li>Pelo mouse clique com o botao direito.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul>
+          <li>
+            <p>Para remover a bandeira, <b class="mark">clique nela.</b></p>
+          </li>
+        </ul>
+
+        <ul>
+          <li>
+            <p >Para reiniciar o jogo, <b class="mark"> atualize a pagina<b></p>
+          </li>
+        </ul>
+      </header>
+    </div>
+    <div class="centralizar">
+      <main id="root" class="root maxwidth"></main>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>
